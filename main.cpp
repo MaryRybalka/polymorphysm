@@ -14,9 +14,9 @@ protected:
     unsigned int salt;
     size_type size;
 public:
-    virtual string getName() {};
-    virtual unsigned int getPrice() {};
-    virtual string getDef() {};
+    virtual string getName() = 0;
+    virtual unsigned int getPrice() = 0;
+    virtual string getDef() = 0;
 
     Pizza(unsigned int s, unsigned int c, size_type _size) {
         salt = s;
@@ -117,31 +117,15 @@ public:
 };
 
 class Order {
-    string list_s;
-    vector<Pizza> list;
+    vector<Pizza*> list;
     unsigned int total;
 public:
     Order(){
         total = 0;
     }
 
-    void add(Pizza &pizza) {
+    void add(Pizza *pizza) {
         list.push_back(pizza);
-        list_s += pizza.getName();
-        list_s += " - ";
-        list_s += pizza.getDef();
-        list_s +='\n';
-        list_s += "   ";
-        list_s += to_string(pizza.getCheese());
-        list_s += " - cheese, ";
-        list_s += to_string(pizza.getSalt());
-        list_s += " - salt, ";
-        list_s += to_string(pizza.getSize());
-        list_s += "inch, ";
-        list_s += to_string(pizza.getPrice());
-        list_s += "rub.";
-        list_s += '\n';
-        total += pizza.getPrice();
     }
 
     void takeOrder(){
@@ -199,23 +183,19 @@ public:
         }
         switch (choosen_pizza){
             case 1:{
-                Margarita marg(_salt, _cheese, _size);
-                add(marg);
+                add(new Margarita(_salt, _cheese, _size));
                 break;
             }
             case 2:{
-                Cezar cez(_salt, _cheese, _size);
-                add(cez);
+                add(new Cezar(_salt, _cheese, _size));
                 break;
             }
             case 3: {
-                FourCheese four_ch(_salt, _cheese, _size);
-                add(four_ch);
+                add(new FourCheese(_salt, _cheese, _size));
                 break;
             }
             default:{
-                Pepperonni pep(_salt, _cheese, _size);
-                add(pep);
+                add(new Pepperonni(_salt, _cheese, _size));
                 break;
             }
         }
@@ -228,16 +208,15 @@ public:
             cout << "Your order is empty" << endl;
         } else {
             cout << "Your order: " << endl;
-//            for (size_t i = 0; i < size; i++) {
-//                cout << (i + 1) << ") " << list[i].getName();
-//                cout << " - " << list[i].getDef() << endl;
-//                cout << "   " << list[i].getCheese();
-//                cout << " - cheese, " << list[i].getSalt();
-//                cout << " - salt, "  << list[i].getSize();
-//                cout << "inch, "  << list[i].getPrice() << endl;
-//                total +=list[i].getPrice();
-//            }
-            cout << list_s;
+            for (size_t i = 0; i < size; i++) {
+                cout << (i + 1) << ") " << list[i]->getName();
+                cout << " - " << list[i]->getDef() << endl;
+                cout << "   " << list[i]->getCheese();
+                cout << " - cheese, " << list[i]->getSalt();
+                cout << " - salt, "  << list[i]->getSize();
+                cout << "inch, "  << list[i]->getPrice() << endl;
+                total +=list[i]->getPrice();
+            }
             cout << "Total: " << total << "rub." << endl;
         }
     };
